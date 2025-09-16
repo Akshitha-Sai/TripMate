@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TripMate - Login</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" 
+        rel="stylesheet">
+  <link rel="icon" href="static/images/favicon.ico" type="image/x-icon">
+  <style>
+    /* Sliding tab styles */
+    #slideTab {
+      position: fixed;
+      top: 20px;
+      right: -300px;
+      width: 280px;
+      padding: 15px;
+      background-color: #2980b9;
+      color: white;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      border-radius: 8px 0 0 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: right 0.5s ease;
+      z-index: 1000;
+    }
+    #slideTab.show {
+      right: 0;
+    }
+    #slideTab.error {
+      background-color: #e74c3c;
+    }
+    #slideTab.success {
+      background-color: #27ae60;
+    }
+    #register-link {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    #register-link a {
+      color: #2980b9;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    #register-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Auth page specific styles */
+    .auth-page {
+      display: flex;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+      transition: background 0.3s ease;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .auth-container {
+      display: flex;
+      max-width: 900px;
+      width: 100%;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      background: rgba(249, 249, 249, 0.95);
+      padding: 0;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .auth-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: url('https://www.pixelstalk.net/wp-content/uploads/2016/08/Travel-the-world-wallpaper-1920x1080.jpg') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 40px 30px;
+      position: relative;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .auth-content {
+      position: relative;
+      z-index: 2;
+      text-align: left;
+      color: white;
+      padding-bottom: 20px;
+    }
+
+    .auth-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      color: white;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .auth-content h1 span {
+      color: #ffcc00;
+    }
+
+    .auth-content p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #f0e68c;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .auth-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #f0e68c;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      max-width: 300px;
+    }
+
+    .auth-right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      background: transparent;
+      padding: 40px 30px;
+    }
+
+    .auth-form-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #34495e;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .auth-header p {
+      font-size: 1rem;
+      color: #666666;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #34495e;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888888;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      border: 1.5px solid #cccccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #222222;
+      transition: border-color 0.3s;
+      background: #ffffff;
+    }
+
+    .input-group input:focus {
+      border-color: #2980b9;
+      outline: none;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888888;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .form-options a {
+      color: #2980b9;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+
+    .form-options a:hover {
+      color: #1c5980;
+    }
+
+    .error-message {
+      background-color: #e74c3c;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+      margin-top: 10px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .success-message {
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+      margin-top: 10px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #2980b9;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05);
+      background: #1c5980;
+    }
+
+    .btn-auth {
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .auth-footer a {
+      color: #2980b9;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .auth-container {
+        flex-direction: column;
+        max-width: 400px;
+        padding: 30px 40px;
+      }
+
+      .auth-left {
+        display: none;
+      }
+
+      .auth-right {
+        padding: 0;
+      }
+
+      .auth-content h1 {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 20px;
+      }
+
+      .auth-header h2 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <div class="auth-left">
+      <div class="auth-content">
+        <h1>Welcome Back to <span>TripMate</span> ✈️</h1>
+        <p>Your AI-powered travel companion for unforgettable journeys</p>
+        <div class="auth-quote">
+          <p>"Travel is the only thing you buy that makes you richer."</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="auth-right">
+      <div class="auth-form-container">
+        <div class="auth-header">
+          <h2>Login to Your Account</h2>
+          <p>Continue your journey with TripMate</p>
+        </div>
+        
+        <form id="loginForm" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-group">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-group">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" name="password" placeholder="Enter your password" required>
+              <i class="fas fa-eye toggle-password"></i>
+            </div>
+            <div class="form-options">
+              <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+          </div>
+          
+          <div id="errorMessage" class="error-message"></div>
+          
+          <button type="submit" class="btn btn-primary btn-auth">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+          
+          <div class="auth-footer">
+            <p>Don't have an account? <a href="signup.html">Register here</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="slideTab"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is already logged in
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && currentUser.isLoggedIn) {
+        // Redirect to main page if already logged in
+        window.location.href = 'main.html';
+        return;
+      }
+
+      // Toggle password visibility
+      const togglePassword = document.querySelector('.toggle-password');
+      const passwordInput = document.getElementById('password');
+      
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          this.classList.toggle('fa-eye');
+          this.classList.toggle('fa-eye-slash');
+        });
+      }
+
+      // Form submission handling
+      const loginForm = document.getElementById('loginForm');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Get form values
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value;
+          
+          // Simple client-side validation
+          if (!email || !password) {
+            showError('Please fill in all fields');
+            return;
+          }
+          
+          if (!isValidEmail(email)) {
+            showError('Please enter a valid email address');
+            return;
+          }
+          
+          // Check if user exists in localStorage
+          const users = JSON.parse(localStorage.getItem('users') || '[]');
+          const user = users.find(u => u.email === email && u.password === password);
+          
+          if (user) {
+            // Set current user session
+            user.isLoggedIn = true;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            
+            // Show success message
+            showMessage('Login successful! Redirecting...', 'success');
+            
+            // Redirect to main page after a short delay
+            setTimeout(() => {
+              window.location.href = 'main.html';
+            }, 1500);
+          } else {
+            showError('Invalid email or password. Please try again.');
+          }
+        });
+      }
+
+      // Helper functions
+      function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+      
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        
+        // Hide error after 5 seconds
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+      
+      function showMessage(message, type) {
+        const slideTab = document.getElementById('slideTab');
+        slideTab.textContent = message;
+        slideTab.className = type === 'error' ? 'error' : 'success';
+        slideTab.classList.add('show');
+        
+        setTimeout(() => {
+          slideTab.classList.remove('show');
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>

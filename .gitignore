@@ -1,0 +1,9 @@
+# environment
+.env
+.env.local
+.env.*.local
+
+# node / misc
+node_modules/
+.vscode/
+.DS_Store

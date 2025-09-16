@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TripMate - AI Travel Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a4cff; /* Purple-blue */
+      --primary-light: #8a6dff; /* Lighter purple-blue */
+      --secondary: #5a3dff; /* Darker purple-blue */
+      --accent: #ff6b6b; /* Coral accent */
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --bg-gradient: linear-gradient(135deg, #6a4cff, #5a3dff);
+      --header-gradient: linear-gradient(90deg, rgba(182, 173, 225, 0.8) 0%, rgba(106,76,255,1) 30%, rgba(106,76,255,1) 70%, rgba(106,76,255,0.8) 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-top: 80px; /* Added to prevent content from being hidden under fixed header */
+    }
+
+    /* Cursor effects */
+    .cursor-effect {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(106, 76, 255, 0.3);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* IMPROVED HEADER STYLES */
+    header {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Navigation */
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #ffd700;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* User Dropdown */
+    .user-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-icon {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .user-icon img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .user-icon:hover img {
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background-color: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 101;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-content a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--light-gray);
+      padding-left: 20px;
+    }
+
+    .dropdown-content a i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .dropdown-content .logout-link {
+      color: var(--warning);
+    }
+
+    .dropdown-content .logout-link:hover {
+      background-color: rgba(247, 37, 133, 0.1);
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* Notification Popup */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      transform: translateX(200%);
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: #4CAF50;
+    }
+
+    .notification.error {
+      background: #F44336;
+    }
+
+    .notification.info {
+      background: var(--primary);
+    }
+    
+    /* IMPROVED Quick Action Button */
+    .quick-action {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 99;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quick-action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: 0.5s;
+    }
+
+    .quick-action-btn:hover::before {
+      left: 100%;
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.6);
+    }
+
+    /* Floating plane animation */
+    .floating-plane {
+      position: fixed;
+      top: 85px;
+      right: 20px;
+      font-size: 2rem;
+      z-index: 98;
+      animation: flying 15s linear infinite;
+      pointer-events: none;
+      opacity: 0.8;
+      text-shadow: 0 0 10px rgba(106, 76, 255, 0.5);
+    }
+
+    @keyframes flying {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-100vw, -100vh) rotate(-20deg);
+        opacity: 0;
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      background: #fffaf0;
+      background-size: cover;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 70% 30%, rgba(106, 76, 255, 0.1) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-family: 'Playfair Display', serif;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto 40px;
+      animation: fadeInUp 1s ease 0.2s forwards;
+      opacity: 0;
+    }
+
+    .hero-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 5px 20px rgba(106, 76, 255, 0.4);
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease 0.4s forwards;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .hero-button:hover::before {
+      left: 100%;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(140, 159, 241, 0.905);
+    }
+
+    .tripmate-logo {
+      max-width: 80%;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+      margin: 50px auto;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      display: block;
+      animation: fadeIn 1s ease 0.6s forwards, subtleZoom 4s ease-in-out infinite 1.6s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    @keyframes subtleZoom {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Collections Section */
+    .collections {
+      padding: 80px 0;
+      background-color: var(--light);
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .section-header p {
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    .discover-box {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+      border-radius: 20px;
+      padding: 80px 30px;
+      color: white;
+      text-align: center;
+      margin-bottom: 50px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .discover-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .discover-box h2 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      font-family: 'Playfair Display', serif;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .discover-box p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-form {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 15px 50px 15px 25px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .search-button {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+      color: var(--accent);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .search-bar:focus {
+      outline: none;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+      transform: translateY(-3px);
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .collection-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .collection-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .collection-image {
+      height: 250px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .collection-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease;
+    }
+
+    .collection-card:hover .collection-image img {
+      transform: scale(1.1);
+    }
+
+    .collection-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .collection-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 25px;
+      color: white;
+      z-index: 1;
+    }
+
+    .collection-info h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .collection-info p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+      background-color: white;
+      position: relative;
+    }
+
+    .features::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, white, var(--light));
+      z-index: 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: height 0.3s ease;
+    }
+
+    .feature-card:hover::before {
+      height: 10px;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 10px 20px rgba(106, 76, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+      transform: rotate(15deg) scale(1.1);
+      box-shadow: 0 15px 30px rgba(106, 76, 255, 0.3);
+    }
+
+    .feature-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      color: var(--gray);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Quote Section */
+    .quote-section {
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-section::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .quote-section::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .quote-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 40px;
+      backdrop-filter: blur(5px);
+    }
+
+    blockquote {
+      font-size: 2rem;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      position: relative;
+      font-family: 'Playfair Display', serif;
+    }
+
+    blockquote::before,
+    blockquote::after {
+      content: '"';
+      font-size: 4rem;
+      opacity: 0.3;
+      position: absolute;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    blockquote::before {
+      top: -30px;
+      left: -50px;
+    }
+
+    blockquote::after {
+      bottom: -60px;
+      right: -50px;
+    }
+
+    cite {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 0;
+      background-color: var(--light);
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-container {
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-container h2 {
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .cta-container p {
+      color: var(--gray);
+      margin-bottom: 40px;
+      font-size: 1.2rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 18px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.2rem;
+      box-shadow: 0 10px 30px rgba(106, 76, 255, 0.3);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(106, 76, 255, 0.4);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 80px 0 30px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links a {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(106, 76, 255, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* RESPONSIVE DESIGN FIXES */
+    @media (max-width: 992px) {
+      .header-container {
+        flex-wrap: wrap;
+      }
+      
+      nav ul {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 15px;
+      }
+      
+      .hero {
+        padding: 120px 0 60px;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2.2rem;
+      }
+      
+      .discover-box h2 {
+        font-size: 2.2rem;
+      }
+      
+      blockquote {
+        font-size: 1.6rem;
+      }
+      
+      .cta-container h2 {
+        font-size: 2.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        justify-content: space-between;
+      }
+      
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      nav ul.active {
+        display: flex;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .user-dropdown {
+        order: 2;
+      }
+      
+      .hero {
+        padding: 100px 0 40px;
+      }
+      
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2rem;
+      }
+      
+      .discover-box {
+        padding: 60px 20px;
+      }
+      
+      .discover-box h2 {
+        font-size: 2rem;
+      }
+      
+      .collection-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      blockquote {
+        font-size: 1.4rem;
+      }
+      
+      blockquote::before,
+      blockquote::after {
+        display: none;
+      }
+      
+      .cta-container h2 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .hero {
+        padding: 90px 0 30px;
+      }
+      
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .section-header h2 {
+        font-size: 1.8rem;
+      }
+      
+      .section-header p,
+      .discover-box p,
+      .cta-container p {
+        font-size: 1rem;
+      }
+      
+      .discover-box h2 {
+        font-size: 1.8rem;
+      }
+      
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-container h2 {
+        font-size: 1.8rem;
+      }
+      
+      .cta-button {
+        padding: 15px 25px;
+        font-size: 1rem;
+      }
+    }
+    .tripmate-video {
+  width: 100%;             /* full width responsive */
+  max-width: 800px;        /* cap size for larger screens */
+  height: auto;            /* keep aspect ratio */
+  display: block;
+  margin: 0 auto;          /* center it */
+  border-radius: 20px;     /* soften corners if you want */
+  
+  /* Fade out the edges */
+  -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: cover;
+  mask-image: radial-gradient(circle, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: cover;
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Cursor Effect -->
+  <div class="cursor-effect" id="cursor"></div>
+  
+  <!-- Notification -->
+  <div class="notification" id="logoutNotification">
+    <i class="fas fa-check-circle"></i>
+    <span>You have been successfully logged out!</span>
+  </div>
+  
+  <!-- Floating Plane -->
+  <div class="floating-plane">✈️ TripMate</div>
+
+  <!-- Header with Navigation -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <h1>TripMate</h1>
+      </div>
+      
+      <button class="mobile-menu-btn" id="mobileMenuButton">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <nav>
+        <ul id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="destinations.html">Destinations</a></li>
+          <li><a href="dev.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="dev.html">Contact</a></li>
+        </ul>
+      </nav>
+      
+      <div class="user-dropdown">
+        <div class="user-icon" id="userDropdownButton">
+          <img src="static/images/userprofile.jpg" alt="User Profile">
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+          <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+          <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+          <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Action Button -->
+  <div class="quick-action">
+    <a href="tripplan.html" class="quick-action-btn">
+      <i class="fas fa-plane"></i>
+      Plan My Trip
+    </a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>Discover the World with TripMate</h1>
+      <p>Your AI-powered travel companion for unforgettable adventures around the globe</p>
+<video autoplay loop muted playsinline class="tripmate-video">
+  <source src="static\videos\Cartoon_Traveler_s_Animated_Adventure.mp4" type="video/mp4">
+</video>
+      <br>
+      <br>
+      <br>
+      <!-- Hero Button -->
+      <a href="tripplan.html" class="hero-button">
+        <i class="fas fa-plane"></i>
+        Start Planning Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Collections Section -->
+  <section class="collections">
+    <div class="container">
+      <div class="section-header">
+        <h2>Handpicked Collections 🌟</h2>
+        <p>Discover our carefully curated travel collections for every type of adventurer</p>
+      </div>
+      
+      <div class="discover-box">
+        <h2>Find Your Perfect Destination</h2>
+        <p>Get the ideal places based on your preferences !</p>
+        <form action="https://www.google.com/search" method="GET" target="_blank" class="search-form">
+          <div class="search-container">
+            <input type="text" class="search-bar" name="q" placeholder="Search destinations, activities..." required>
+            <button type="submit" class="search-button">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="collection-grid">
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Mountain Adventures">
+            <div class="collection-badge">TOP 9</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Mountain Escapes</h3>
+                <p>Breathtaking peaks and alpine adventures</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Sunset Spots">
+            <div class="collection-badge">TOP 7</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Sunset Spots</h3>
+                <p>Best places to watch the sun dip below the horizon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1518684079-3c830dcef090?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dubai Skyscrapers">
+            <div class="collection-badge">TOP 8</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Dubai Wonders</h3>
+                <p>Modern marvels and desert adventures</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Tropical Paradise">
+            <div class="collection-badge">TOP 6</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Tropical Getaways</h3>
+                <p>Pristine beaches and crystal clear waters</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="City Breaks">
+            <div class="collection-badge">TOP 12</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Urban Explorations</h3>
+                <p>Vibrant cities with rich culture and history</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collection-card">
+          <div class="collection-image">
+            <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Hidden Gems">
+            <div class="collection-badge">TOP 5</div>
+            <div class="collection-overlay">
+              <div class="collection-info">
+                <h3>Hidden Gems</h3>
+                <p>Underrated destinations off the beaten path</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Choose TripMate ✨</h2>
+        <p>Experience the future of travel planning with our AI-powered features</p>
+      </div>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-magic"></i>
+          </div>
+          <h3>AI-Powered Itineraries 🧠</h3>
+          <p>Custom travel plans tailored to your preferences, budget, and travel style.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h3>Tourist Spot Finder 🗺️</h3>
+          <p>Discover perfect locations matching your interests anywhere in the world.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h3>Budget Optimization 💰</h3>
+          <p>Find the best deals automatically for maximum value on your trips.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-route"></i>
+          </div>
+          <h3>Smart Route Planning 🚗</h3>
+          <p>Optimized travel routes with real-time updates and alternatives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section">
+    <div class="container quote-container">
+      <blockquote>
+        "Travel is the only thing you buy that makes you richer."
+      </blockquote>
+      <cite>- Anonymous</cite>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="container cta-container">
+      <h2>Want to Know More About TripMate?</h2>
+      <p>Discover how our AI travel companion can transform your travel experiences</p>
+      <a href="about.html" class="cta-button">
+        <i class="fas fa-info-circle"></i>
+        Learn More About TripMate
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>TripMate</h3>
+          <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+           <div class="social-links">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="destinations.html">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 TripMate. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    
+    // Cursor Effect
+    const cursor = document.getElementById('cursor');
+    if (cursor) {
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.pageX + 'px';
+        cursor.style.top = e.pageY + 'px';
+        
+        // Change cursor color when hovering interactive elements
+        const hoverElements = document.querySelectorAll('a, button, input, .user-icon, .collection-card, .feature-card');
+        let isHovering = false;
+        
+        hoverElements.forEach(el => {
+          if (el.contains(e.target)) {
+            isHovering = true;
+          }
+        });
+        
+        if (isHovering) {
+          cursor.style.backgroundColor = 'rgba(255, 107, 107, 0.5)';
+          cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        } else {
+          cursor.style.backgroundColor = 'rgba(106, 76, 255, 0.5)';
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        }
+      });
+    }
+
+    // Mobile menu functionality
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (mobileMenuButton && navMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuButton.innerHTML = navMenu.classList.contains('active') ? 
+          '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
+    }
+
+    // Dropdown Menu Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownButton = document.getElementById('userDropdownButton');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      
+      if (dropdownButton && dropdownMenu) {
+        // Toggle dropdown menu
+        dropdownButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!dropdownMenu.contains(e.target) && !dropdownButton.contains(e.target)) {
+            dropdownMenu.style.display = 'none';
+          }
+          
+          // If clicking a dropdown link, close after a small delay
+          if (e.target.closest('.dropdown-content a')) {
+            setTimeout(() => {
+              dropdownMenu.style.display = 'none';
+            }, 200);
+          }
+        });
+      }
+
+      // Logout functionality with notification
+      const logoutButton = document.getElementById('logoutButton');
+      if (logoutButton) {
+        logoutButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Show notification
+          const notification = document.getElementById('logoutNotification');
+          notification.classList.add('show');
+          
+          // Hide after 3 seconds and redirect
+          setTimeout(() => {
+            notification.classList.remove('show');
+            window.location.href = 'index.html'; // Redirect to home page
+          }, 3000);
+        });
+      }
+    });
+
+    // Scroll animations
+    const animateOnScroll = () => {
+      const elements = document.querySelectorAll('.collection-card, .feature-card, .discover-box');
+      elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (elementPosition < screenPosition) {
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        }
+      });
+    };
+
+    // Initialize animations when page loads
+    window.addEventListener('load', () => {
+      const animatedElements = document.querySelectorAll('.collection-card, .feature-card, .discover-box');
+      animatedElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+      });
+      
+      setTimeout(animateOnScroll, 100);
+    });
+
+    // Scroll event listener for animations
+    window.addEventListener('scroll', animateOnScroll);
+  </script>
+</body>
+</html>

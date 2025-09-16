@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - TripMate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a4cff;
+      --primary-light: #8a6dff;
+      --secondary: #5a3dff;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --bg-gradient: linear-gradient(135deg, #6a4cff, #5a3dff);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      padding-top: 80px; /* Added for fixed header */
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Navigation */
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #ffd700;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* User Dropdown */
+    .user-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-icon {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .user-icon img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .user-icon:hover img {
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background-color: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 101;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-content a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--light-gray);
+      padding-left: 20px;
+    }
+
+    .dropdown-content a i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .dropdown-content .logout-link {
+      color: var(--warning);
+    }
+
+    .dropdown-content .logout-link:hover {
+      background-color: rgba(247, 37, 133, 0.1);
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* Quick Action Button */
+    .quick-action {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 99;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5);
+    }
+
+    /* Profile Section */
+    .profile-section {
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-title {
+      font-size: 2.2rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 15px;
+    }
+
+    .stat-box {
+      background-color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .profile-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+    }
+
+    /* Profile Card */
+    .profile-card {
+      background-color: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      height: fit-content;
+    }
+
+    .profile-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid var(--light-gray);
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .profile-email {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .profile-bio {
+      margin: 20px 0;
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .contact-info {
+      margin-top: 25px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .contact-item i {
+      color: var(--primary);
+      width: 20px;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .dashboard-card {
+      background-color: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-description {
+      color: var(--gray);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .card-link:hover {
+      gap: 10px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 80px 0 30px;
+      position: relative;
+      margin-top: 80px;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links a {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .profile-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-wrap: wrap;
+      }
+      
+      nav ul {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 15px;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      
+      .profile-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      nav ul.active {
+        display: flex;
+      }
+      
+      .user-dropdown {
+        order: 2;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .dashboard-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .stat-box {
+        min-width: calc(50% - 10px);
+      }
+      
+      .profile-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <h1>TripMate</h1>
+      </div>
+      
+      <button class="mobile-menu-btn" id="mobileMenuButton">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <nav>
+        <ul id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="destinations.html">Destinations</a></li>
+          <li><a href="trips.html">My Trips</a></li>
+          <li><a href="feedback.html">Reviews</a></li>
+           <li><a href="dev.html">Contact</a></li>
+        </ul>
+      </nav>
+      
+      <div class="user-dropdown">
+        <div class="user-icon" id="userDropdownButton">
+          <img src="static\images\userprofile.jpg" alt="User Profile" id="profileImage">
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+          <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+          <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+          <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Action Button -->
+  <div class="quick-action">
+    <a href="tripplan.html" class="quick-action-btn">
+      <i class="fas fa-plane"></i>
+      Plan My Trip
+    </a>
+  </div>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <div class="profile-header">
+      <h1 class="profile-title">My Profile</h1>
+      <div class="profile-stats">
+        <!--<div class="stat-box">
+          <div class="stat-number" id="tripCount">0</div>
+          <div class="stat-label">Trips</div>
+        </div>-->
+        <div class="stat-box">
+          <div class="stat-number" id="reviewCount">0</div>
+          <div class="stat-label">Reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-content">
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-info">
+          <img src="static\images\userprofile.jpg" alt="Profile Picture" class="profile-pic" id="profilePicture">
+          <h2 class="profile-name" id="profileName">User Name</h2>
+          <p class="profile-email" id="profileEmail">user@example.com</p>
+        </div>
+        
+        <p class="profile-bio" id="profileBio">
+          This user hasn't added a bio yet.
+        </p>
+        
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span id="profilePhone">Not provided</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="profileLocation">Not provided</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Member since <span id="memberSince">2023</span></span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Dashboard Cards -->
+      <div class="dashboard-cards">
+        <div class="dashboard-card" onclick="window.location.href='trips.html'">
+          <div class="card-icon">
+            <i class="fas fa-suitcase"></i>
+          </div>
+          <h3 class="card-title">My Trips</h3>
+          <p class="card-description">
+            View and manage your upcoming, past, and saved trips all in one place.
+          </p>
+          <a href="trips.html" class="card-link">
+            View Trips <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="dashboard-card" onclick="window.location.href='feedback.html'">
+          <div class="card-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <h3 class="card-title">Reviews & Feedback</h3>
+          <p class="card-description">
+            Share your travel experiences and read feedback from other travelers.
+          </p>
+          <a href="feedback.html" class="card-link">
+            See Reviews <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="dashboard-card" onclick="window.location.href='settings.html'">
+          <div class="card-icon">
+            <i class="fas fa-cog"></i>
+          </div>
+          <h3 class="card-title">Account Settings</h3>
+          <p class="card-description">
+            Update your profile information, preferences, and notification settings.
+          </p>
+          <a href="settings.html" class="card-link">
+            Go to Settings <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="dashboard-card" onclick="window.location.href='trips.html'">
+          <div class="card-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3 class="card-title">Saved Destinations</h3>
+          <p class="card-description">
+            Your bucket list of places you want to visit in the future.
+          </p>
+          <a href="trips.html" class="card-link">
+            View Saved <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>TripMate</h3>
+        
+        <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+       <div class="social-links">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+      </div>
+      
+      <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="destinations.html">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 TripMate. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // DOM elements
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const navMenu = document.getElementById('navMenu');
+    const userDropdownButton = document.getElementById('userDropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const logoutButton = document.getElementById('logoutButton');
+
+    // Mobile menu functionality
+    if (mobileMenuButton && navMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuButton.innerHTML = navMenu.classList.contains('active') ? 
+          '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
+    }
+
+    // User dropdown functionality - FIXED
+    if (userDropdownButton && dropdownMenu) {
+      userDropdownButton.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent the click from bubbling up
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.user-dropdown')) {
+          dropdownMenu.style.display = 'none';
+        }
+      });
+    }
+
+    // Logout functionality
+    if (logoutButton) {
+      logoutButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to logout?')) {
+          // Clear user data from local storage
+          localStorage.removeItem('currentUser');
+          // Redirect to login page
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    // Load user data from local storage
+    function loadUserData() {
+      const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+      
+      // Set profile information
+      document.getElementById('profileName').textContent = userData.username || 'User Name';
+      document.getElementById('profileEmail').textContent = userData.email || 'user@example.com';
+      document.getElementById('profileBio').textContent = userData.bio || 'This user hasn\'t added a bio yet.';
+      document.getElementById('profilePhone').textContent = userData.phone || 'Not provided';
+      document.getElementById('profileLocation').textContent = userData.address || 'Not provided';
+      document.getElementById('memberSince').textContent = new Date().getFullYear();
+      
+      // Set profile image if available
+      if (userData.profileImage) {
+        document.getElementById('profileImage').src = userData.profileImage;
+        document.getElementById('profilePicture').src = userData.profileImage;
+      }
+      
+      // Calculate trip and review counts from actual data
+      // Load trips and reviews from localStorage
+window.trips = [];
+const storedTrips = JSON.parse(localStorage.getItem("userTrips")) || {};
+for (const category of ["current", "saved", "history"]) {
+  if (storedTrips[category]) {
+    window.trips = window.trips.concat(storedTrips[category]);
+  }
+}      window.reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+      // Update stats
+      updateStats();
+    }
+
+    function updateStats() {
+  const currentTrips = trips.filter(trip =>
+    trip.status === "current" || trip.status === "upcoming" || trip.status === "draft"
+  );
+ // document.getElementById("tripCount").textContent = currentTrips.length;
+  document.getElementById("reviewCount").textContent = reviews.length;
+}
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadUserData();
+    });
+
+  </script>
+
+</body>
+</html>

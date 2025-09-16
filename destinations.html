@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TripMate - Destinations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a4cff; /* Purple-blue */
+      --primary-light: #8a6dff; /* Lighter purple-blue */
+      --secondary: #5a3dff; /* Darker purple-blue */
+      --accent: #ff6b6b; /* Coral accent */
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --bg-gradient: linear-gradient(135deg, #6a4cff, #5a3dff);
+      --header-gradient: linear-gradient(90deg, rgba(106,76,255,0.8) 0%, rgba(106,76,255,1) 30%, rgba(106,76,255,1) 70%, rgba(106,76,255,0.8) 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-top: 80px; /* Add padding to prevent content from being hidden under fixed header */
+    }
+
+    /* Cursor effects */
+    .cursor-effect {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(106, 76, 255, 0.3);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Navigation */
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #ffd700;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* User Dropdown */
+    .user-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-icon {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .user-icon img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .user-icon:hover img {
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background-color: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 101;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-content a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--light-gray);
+      padding-left: 20px;
+    }
+
+    .dropdown-content a i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .dropdown-content .logout-link {
+      color: var(--warning);
+    }
+
+    .dropdown-content .logout-link:hover {
+      background-color: rgba(247, 37, 133, 0.1);
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* Notification Popup */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      transform: translateX(200%);
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: #4CAF50;
+    }
+
+    .notification.error {
+      background: #F44336;
+    }
+
+    .notification.info {
+      background: var(--primary);
+    }
+    
+    /* Quick Action Button */
+    .quick-action {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 99;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quick-action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: 0.5s;
+    }
+
+    .quick-action-btn:hover::before {
+      left: 100%;
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.6);
+    }
+
+    /* Destinations Page Specific Styles */
+    .destinations-header {
+      text-align: center;
+      padding: 120px 0 50px;
+      background: var(--bg-gradient);
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .destinations-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    /* Destinations Header with pastel fade animation */
+.destinations-header {
+  text-align: center;
+  padding: 100px 0 40px;
+  background: linear-gradient(135deg,#63d6f9, #24016e, #57c0f5, #1b0269);
+  background-size: 600% 600%;
+  animation: pastelFade 15s ease infinite;
+  color: #333;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  border-radius: 0 0 40px 40px;
+}
+
+@keyframes pastelFade {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.destinations-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f7f5f5;
+}
+
+.destinations-header p {
+  font-size: 1.1rem;
+  color: #f9f6f6;
+}
+
+/* Destination Card smaller and cuter */
+.destination {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.destination:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.destination-image {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.text-content h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #6a4cff;
+}
+
+.text-content p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+
+    .intro-text {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+      color: var(--gray);
+      font-size: 1.1rem;
+      animation: fadeInUp 1s ease 0.4s forwards;
+      opacity: 0;
+    }
+
+    .destinations-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 2rem 3rem;
+    }
+
+    .section-title {
+      text-align: center;
+      color: var(--primary);
+      margin: 3rem 0 2rem;
+      font-size: 2.2rem;
+      position: relative;
+      font-family: 'Playfair Display', serif;
+      animation: fadeInUp 1s ease;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 4px;
+      background: var(--accent);
+      margin: 0.5rem auto;
+      border-radius: 2px;
+    }
+
+    .destination {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4rem;
+      gap: 3rem;
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: fadeInUp 1s ease;
+    }
+
+    .destination:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .destination:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .image-container {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .destination-image {
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+      border-radius: 50%; /* Make images circular */
+      position: relative;
+    }
+
+    .destination-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease;
+    }
+
+    .destination:hover .destination-image img {
+      transform: scale(1.1);
+    }
+
+    .image-container::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 2px solid var(--accent);
+      border-radius: 50%; /* Circular outline to match images */
+      z-index: -1;
+      opacity: 0;
+      transition: var(--transition);
+      filter: blur(10px);
+    }
+
+    .destination:hover .image-container::before {
+      opacity: 0.5;
+    }
+
+    .text-content {
+      flex: 1;
+      padding: 1rem;
+    }
+
+    .text-content h2 {
+      color: var(--primary);
+      margin-bottom: 0.8rem;
+      font-size: 1.6rem; /* Reduced heading size */
+      font-family: 'Playfair Display', serif;
+    }
+
+    .text-content p {
+      color: var(--gray);
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    .explore-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 0.5rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      padding: 0.5rem 1.5rem;
+      border: 2px solid var(--primary);
+      border-radius: 30px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .explore-btn:hover {
+      color: white;
+      background: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(106, 76, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 80px 0 30px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links a {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(106, 76, 255, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .header-container {
+        flex-wrap: wrap;
+      }
+      
+      nav ul {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 15px;
+      }
+      
+      .destinations-header {
+        padding: 150px 0 40px;
+      }
+      
+      .destinations-header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .destinations-header p {
+        font-size: 1.1rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .destination {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 1.5rem;
+        padding: 20px;
+      }
+      
+      .destination-image {
+        width: 180px;
+        height: 180px;
+      }
+      
+      .text-content {
+        padding: 0;
+      }
+      
+      .destinations-header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .destinations-header p {
+        font-size: 1.1rem;
+      }
+      
+      .quick-action {
+        top: 80px;
+        right: 20px;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      nav ul.active {
+        display: flex;
+      }
+      
+      .user-dropdown {
+        order: 2;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .destinations-header {
+        padding: 130px 0 30px;
+      }
+      
+      .destinations-header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .destinations-header p {
+        font-size: 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .destination-image {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .text-content h2 {
+        font-size: 1.4rem;
+      }
+      
+      .quick-action {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cursor Effect -->
+  <div class="cursor-effect" id="cursor"></div>
+
+  <!-- Header with Navigation -->
+  <header>
+    <div class="container header-container">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <h1>TripMate</h1>
+      </div>
+      
+      <button class="mobile-menu-btn" id="mobileMenuButton">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <nav>
+        <ul id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="destinations.html">Destinations</a></li>
+          <li><a href="main.html">Collections</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="dev.html">Contact</a></li>
+        </ul>
+      </nav>
+      
+      <div class="user-dropdown">
+        <div class="user-icon" id="userDropdownButton">
+          <img src="static/images/userprofile.jpg" alt="User Profile">
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+          <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+          <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+          <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Action Button -->
+  <div class="quick-action">
+    <a href="tripplan.html" class="quick-action-btn">
+      <i class="fas fa-plane"></i>
+      Plan My Trip
+    </a>
+  </div>
+
+  <!-- Destinations Header -->
+  <div class="destinations-header">
+    <h1>WORLD DESTINATIONS</h1>
+    <p>Discover the most breathtaking places on Earth with TripMate</p>
+  </div>
+
+  <div class="intro-text">
+    Explore iconic landmarks, natural wonders, and cultural sites around the globe, from the Eiffel Tower to the Great Wall of China and beyond.
+  </div>
+
+  <div class="destinations-container">
+    <h2 class="section-title">Iconic Landmarks</h2>
+    
+    <div id="landmarks"></div>
+    
+    <h2 class="section-title">Natural Wonders</h2>
+    
+    <div id="natural-wonders"></div>
+    
+    <h2 class="section-title">Cultural Sites</h2>
+    
+    <div id="cultural-sites"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>TripMate</h3>
+          <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="#">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 TripMate. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const destinations = {
+        landmarks: [
+            {
+                name: "Eiffel Tower, Paris, France",
+                description: "A symbol of romance and culture, the Eiffel Tower is one of the most recognizable structures in the world. Visitors can enjoy stunning views of Paris from its observation decks.",
+                link: "https://en.wikipedia.org/wiki/Eiffel_Tower",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/800px-Tour_Eiffel_Wikimedia_Commons.jpg"
+            },
+            {
+                name: "Statue of Liberty, New York, USA",
+                description: "This iconic statue represents freedom and democracy. It has welcomed millions of immigrants arriving by sea and remains a symbol of hope.",
+                link: "https://en.wikipedia.org/wiki/Statue_of_Liberty",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/800px-Statue_of_Liberty_7.jpg"
+            },
+            {
+                name: "Great Wall of China",
+                description: "Stretching over 13,000 miles, the Great Wall is a marvel of ancient engineering and a UNESCO World Heritage site. It offers breathtaking views and a glimpse into China's rich history.",
+                link: "https://en.wikipedia.org/wiki/Great_Wall_of_China",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Great_Wall_of_China_at_Jinshanling-edit.jpg/800px-The_Great_Wall_of_China_at_Jinshanling-edit.jpg"
+            },
+            {
+                name: "Colosseum, Rome, Italy",
+                description: "The largest ancient amphitheater ever built, the Colosseum is a testament to Roman engineering and architecture. It is a must-visit for history enthusiasts.",
+                link: "https://en.wikipedia.org/wiki/Colosseum",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/800px-Colosseo_2020.jpg"
+            },
+            {
+                name: "Machu Picchu, Peru",
+                description: "This ancient Incan city set high in the Andes Mountains is renowned for its archaeological significance and stunning scenery. It attracts hikers and history buffs alike.",
+                link: "https://en.wikipedia.org/wiki/Machu_Picchu",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Machu_Picchu%2C_Peru.jpg/800px-Machu_Picchu%2C_Peru.jpg"
+            },
+            {
+                name: "India Gate, New Delhi",
+                description: "A war memorial dedicated to soldiers of World War I, also a popular tourist spot and iconic landmark in India's capital city.",
+                link: "https://en.wikipedia.org/wiki/India_Gate",
+                image: "https://wallpaperaccess.com/full/4455652.jpg"
+            },
+            {
+                name: "Gateway of India, Mumbai",
+                description: "A historic arch monument overlooking the Arabian Sea, built during the British era. It's one of Mumbai's most recognizable landmarks.",
+                link: "https://en.wikipedia.org/wiki/Gateway_of_India",
+                image: "https://w0.peakpx.com/wallpaper/581/14/HD-wallpaper-gateway-of-india-cst-mumbai.jpg"
+            },
+            {
+                name: "Sydney Opera House, Australia",
+                description: "A UNESCO World Heritage site, famous for its sail-like design and as a premier performing arts venue in Australia.",
+                link: "https://en.wikipedia.org/wiki/Sydney_Opera_House",
+                image: "https://www.katalay.net/images/lg/d8c4b5b85d3ff98e762e131a8dc79e18.jpg"
+            },
+            {
+                name: "Christ the Redeemer, Brazil",
+                description: "The massive statue of Jesus overlooking Rio de Janeiro, symbolizing peace and Christianity. One of the New Seven Wonders of the World.",
+                link: "https://en.wikipedia.org/wiki/Christ_the_Redeemer_(statue)",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Christ_the_Redeemer_-_Cristo_Redentor.jpg/800px-Christ_the_Redeemer_-_Cristo_Redentor.jpg"
+            },
+            {
+                name: "Burj Khalifa, Dubai, UAE",
+                description: "The tallest building in the world, a modern engineering marvel that dominates Dubai's skyline with its impressive height and design.",
+                link: "https://en.wikipedia.org/wiki/Burj_Khalifa",
+                image: "https://th.bing.com/th/id/OIP.XmsuLGeW3TXnDQ-HUPBMJQHaFS?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
+            },
+            {
+                name: "Golden Gate Bridge, USA",
+                description: "One of the most photographed bridges in the world, known for its distinctive orange-red color and spanning the Golden Gate strait.",
+                link: "https://en.wikipedia.org/wiki/Golden_Gate_Bridge",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/800px-GoldenGateBridge-001.jpg"
+            },
+            {
+                name: "Acropolis of Athens, Greece",
+                description: "Ancient citadel with the Parthenon, symbol of classical Greece and Western civilization. A UNESCO World Heritage site.",
+                link: "https://en.wikipedia.org/wiki/Acropolis_of_Athens",
+                image: "https://cdn.enjoytravel.com/img/travel-news/the-acropolis-is-home-to-ancient-buildings.jpg"
+            }
+        ],
+        "natural-wonders": [
+            {
+                name: "Grand Canyon, Arizona, USA",
+                description: "Known for its immense size and intricate landscapes, the Grand Canyon offers breathtaking views and numerous hiking trails.",
+                link: "https://en.wikipedia.org/wiki/Grand_Canyon",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/USA_09847_Grand_Canyon_Luca_Galuzzi_2007.jpg/800px-USA_09847_Grand_Canyon_Luca_Galuzzi_2007.jpg"
+            },
+            {
+                name: "Niagara Falls, USA/Canada",
+                description: "A stunning natural wonder, Niagara Falls is famous for its powerful waterfalls and scenic beauty, attracting millions of visitors each year.",
+                link: "https://en.wikipedia.org/wiki/Niagara_Falls",
+                image: "https://th.bing.com/th/id/OIP._V1Mjen0YeZANKhlBTvtgQHaFL?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
+            },
+            {
+                name: "Santorini, Greece",
+                description: "Famous for its whitewashed buildings and stunning sunsets, Santorini is a picturesque island that offers a unique blend of natural beauty and rich history.",
+                link: "https://en.wikipedia.org/wiki/Santorini",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Oia%2C_Santorini_HDR_sunset.jpg/800px-Oia%2C_Santorini_HDR_sunset.jpg"
+            },
+            {
+                name: "Mount Fuji, Japan",
+                description: "A sacred mountain and an iconic natural landmark, often snow-capped. It's Japan's tallest peak and an active volcano.",
+                link: "https://en.wikipedia.org/wiki/Mount_Fuji",
+                image: "https://tse3.mm.bing.net/th/id/OIP.pOqw-SHDhfTGfeRPpab_rwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
+            },
+            {
+                name: "Mount Everest, Nepal/Tibet",
+                description: "The world's tallest mountain, a legendary destination for climbers and adventurers seeking the ultimate challenge.",
+                link: "https://en.wikipedia.org/wiki/Mount_Everest",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/800px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg"
+            },
+            {
+                name: "Mount Kilimanjaro, Tanzania",
+                description: "Africa's highest peak, attracting adventurers and nature lovers with its snow-capped summit despite being near the equator.",
+                link: "https://en.wikipedia.org/wiki/Mount_Kilimanjaro",
+                image: "https://tse1.explicit.bing.net/th/id/OIP.HydmhQUQ8ESOxqjuo9ByqQHaE7?rs=1&pid=ImgDetMain&o=7&rm=3"
+            }
+        ],
+        "cultural-sites": [
+            {
+                name: "Taj Mahal, Agra, India",
+                description: "This UNESCO World Heritage site is a stunning mausoleum built in memory of Mumtaz Mahal. It is renowned for its beautiful architecture and romantic history.",
+                link: "https://en.wikipedia.org/wiki/Taj_Mahal",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Taj_Mahal%2C_Agra%2C_India_edit3.jpg/800px-Taj_Mahal%2C_Agra%2C_India_edit3.jpg"
+            },
+            {
+                name: "Pyramids of Giza, Egypt",
+                description: "The last of the Seven Wonders of the Ancient World, the Pyramids are a testament to ancient Egyptian civilization and engineering prowess.",
+                link: "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Kheops-Pyramid.jpg/800px-Kheops-Pyramid.jpg"
+            },
+            {
+                name: "Stonehenge, England",
+                description: "This prehistoric monument is famous for its mysterious origins and alignment with the solstices, making it a fascinating cultural site.",
+                link: "https://en.wikipedia.org/wiki/Stonehenge",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Stonehenge2007_07_30.jpg/800px-Stonehenge2007_07_30.jpg"
+            },
+            {
+                name: "Hampi, Karnataka",
+                description: "UNESCO World Heritage site, famous for its ancient temples and ruins of the Vijayanagara Empire, showcasing magnificent architecture.",
+                link: "https://en.wikipedia.org/wiki/Hampi",
+                image: "https://www.worldatlas.com/r/w1200/upload/ff/49/57/shutterstock-1509720656.jpg"
+            },
+            {
+                name: "Charminar, Hyderabad",
+                description: "A 16th-century mosque and monument, symbol of Hyderabad's culture and heritage with four grand arches.",
+                link: "https://en.wikipedia.org/wiki/Charminar",
+                image: "https://tse3.mm.bing.net/th/id/OIP.lyjqJuyxDdhTBn3bNldplAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+            },
+            {
+                name: "Ajanta & Ellora Caves, Maharashtra",
+                description: "Ancient rock-cut caves with stunning Buddhist, Hindu, and Jain sculptures and paintings dating back to the 2nd century BCE.",
+                link: "https://en.wikipedia.org/wiki/Ajanta_Caves",
+                image: "https://www.tripsavvy.com/thmb/kq8SQCFUkowXQbdV47QTOOKNDeI=/3000x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-583958200-03a09c835d52423eb2d29dc624412908.jpg"
+            },
+            {
+                name: "Petra, Jordan",
+                description: 'An ancient rock-cut city, known as the "Rose City," with its famous Treasury building carved directly into pink sandstone cliffs.',
+                link: "https://en.wikipedia.org/wiki/Petra",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Treasury_petra_crop.jpeg/800px-Treasury_petra_crop.jpeg"
+            },
+            {
+                name: "Angkor Wat, Cambodia",
+                description: "The largest religious monument in the world, originally a Hindu temple dedicated to Vishnu, later transforming into a Buddhist temple.",
+                link: "https://en.wikipedia.org/wiki/Angkor_Wat",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Angkor_Wat.jpg/800px-Angkor_Wat.jpg"
+            }
+        ]
+    };
+
+    function renderDestinations() {
+        const landmarksContainer = document.getElementById('landmarks');
+        const naturalWondersContainer = document.getElementById('natural-wonders');
+        const culturalSitesContainer = document.getElementById('cultural-sites');
+        
+        renderCategory(destinations.landmarks, landmarksContainer);
+        renderCategory(destinations["natural-wonders"], naturalWondersContainer);
+        renderCategory(destinations["cultural-sites"], culturalSitesContainer);
+    }
+    
+    function renderCategory(category, container) {
+        category.forEach((dest, index) => {
+            container.innerHTML += `
+                <div class="destination">
+                    <div class="image-container">
+                        <div class="destination-image">
+                            <img src="${dest.image}" alt="${dest.name}" onerror="this.src='https://via.placeholder.com/200x200/6a4cff/ffffff?text=Image+Not+Found'">
+                        </div>
+                    </div>
+                    <div class="text-content">
+                        <h2>${dest.name}</h2>
+                        <p>${dest.description}</p>
+                        <a href="${dest.link}" target="_blank" class="explore-btn">
+                            <i class="fas fa-external-link-alt"></i> Explore More
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        renderDestinations();
+        
+        // User dropdown functionality
+        const userDropdownButton = document.getElementById('userDropdownButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        if (userDropdownButton && dropdownMenu) {
+            userDropdownButton.addEventListener('click', function() {
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.user-dropdown')) {
+                    dropdownMenu.style.display = 'none';
+                }
+            });
+        }
+        
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (mobileMenuButton && navMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                mobileMenuButton.innerHTML = navMenu.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+        }
+        
+        // Cursor effect
+        const cursor = document.getElementById('cursor');
+        if (cursor) {
+            document.addEventListener('mousemove', function(e) {
+                cursor.style.left = e.pageX + 'px';
+                cursor.style.top = e.pageY + 'px';
+            });
+        }
+        
+        // Logout functionality
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'notification success';
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>You have been successfully logged out!</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+                
+                // Hide after 3 seconds and redirect
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                        window.location.href = 'index.html';
+                    }, 300);
+                }, 3000);
+            });
+        }
+    });
+  </script>
+</body>
+</html>

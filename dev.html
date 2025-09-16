@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Development Story - TripMate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a4cff;
+      --primary-light: #8a6dff;
+      --secondary: #5a3dff;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      padding-top: 80px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #ffd700;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .user-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-icon {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .user-icon img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .user-icon:hover img {
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background-color: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 101;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-content a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--light-gray);
+      padding-left: 20px;
+    }
+
+    .dropdown-content a i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .dropdown-content .logout-link {
+      color: var(--warning);
+    }
+
+    .dropdown-content .logout-link:hover {
+      background-color: rgba(247, 37, 133, 0.1);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* Development Story Content */
+    .dev-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* Main Content Section */
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 60px;
+      align-items: flex-start;
+    }
+
+    .text-content {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .video-content {
+      flex: 1;
+      min-width: 300px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      height: fit-content;
+    }
+
+    .main-video {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      display: block;
+    }
+
+    .section-title {
+      margin-bottom: 25px;
+      font-size: 2.2rem;
+      color: var(--dark);
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .text-content p {
+      margin-bottom: 20px;
+      color: var(--gray);
+      font-size: 1.05rem;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 600;
+    }
+
+   /* Circular Slideshow Section */
+.slideshow-section {
+  margin: 80px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.slideshow-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* One circular frame slideshow */
+.circular-slideshow {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.circular-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.circular-slide.active {
+  opacity: 1;
+}
+
+
+    /* Bottom Video Section */
+    .bottom-video-section {
+      margin: 80px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .bottom-video-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .bottom-video-container {
+      flex: 1;
+      min-width: 300px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .bottom-video {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      display: block;
+    }
+
+    /* Developer Section */
+    .developer-section {
+      background: linear-gradient(135deg, #f6f9ff 0%, #e9f2ff 100%);
+      padding: 60px 40px;
+      border-radius: 20px;
+      margin: 80px 0;
+      text-align: center;
+    }
+
+    .developer-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .developer-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 25px;
+      border: 5px solid white;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .developer-name {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+
+    .developer-role {
+      color: var(--primary);
+      margin-bottom: 25px;
+      font-weight: 500;
+    }
+
+    .developer-bio {
+      color: var(--gray);
+      margin-bottom: 30px;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-links a {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(106, 76, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 80px 0 30px;
+      position: relative;
+      margin-top: 80px;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links-footer {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links-footer a {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links-footer a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    @media (max-width: 768px) {
+      .header-container { flex-wrap: wrap; }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      nav ul.active { display: flex; }
+      .mobile-menu-btn { display: block; }
+      .user-dropdown { order: 2; }
+      
+      .main-content,
+      .slideshow-section,
+      .bottom-video-section {
+        flex-direction: column;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .circular-slideshow {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <h1>TripMate</h1>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuButton"><i class="fas fa-bars"></i></button>
+      <nav>
+        <ul id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="destinations.html">Destinations</a></li>
+          <li><a href="trips.html">My Trips</a></li>
+          <li><a href="feedback.html">Reviews</a></li>
+          <li><a href="about.html">About</a></li>
+    
+        </ul>
+      </nav>
+      <div class="user-dropdown">
+        <div class="user-icon" id="userDropdownButton">
+          <img src="static/images/userprofile.jpg" alt="User Profile" id="profileImage">
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+          <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+          <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+          <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Development Story Content -->
+  <div class="dev-container">
+    <!-- Main Content Section -->
+    <section class="main-content">
+      <div class="text-content">
+        <h2 class="section-title">The Story Behind TripMate</h2>
+        <p>TripMate was born from a simple observation: <span class="highlight">travel planning is often more stressful than it needs to be</span>. Despite countless travel resources available online, people still spend hours researching, comparing, and organizing their trips across multiple platforms.</p>
+        
+        <p>The idea emerged when I noticed friends and family struggling to create cohesive travel itineraries that balanced budget constraints, personal interests, and practical logistics. Existing solutions either offered generic recommendations or required significant manual effort to compile useful information.</p>
+        
+        <p>I envisioned a platform that would <span class="highlight">leverage artificial intelligence</span> to simplify this process—a smart travel companion that could generate personalized itineraries based on individual preferences, past experiences, and real-time data.</p>
+      </div>
+      <div class="video-content">
+        <video class="main-video" autoplay loop muted>
+          <source src="static/videos/Akshitha_Sai_s_AI_Travel_Planner.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+
+    <!-- Circular Slideshow Section -->
+    <section class="slideshow-section">
+       <div class="circular-slideshow" id="circleSlideshow"></div>
+  <div class="slideshow-text">
+    <h2>Exploring the Journey</h2>
+    <p>
+      The vision of TripMate came from imagining a travel assistant that not
+      only gives suggestions but also tells a story through visuals.
+      The slideshow represents destinations that inspired the creation of this project.
+    </p>
+  </div>
+</section>
+
+
+    <!-- Bottom Video Section -->
+    <section class="bottom-video-section">
+      <div class="bottom-video-text">
+        <h2 class="section-title">The Vision for TripMate</h2>
+        <p>The development process involved creating a robust AI algorithm that could analyze user preferences, travel constraints, and destination information to generate optimized itineraries.</p>
+        
+        <p>We focused on building an intuitive interface that makes trip planning enjoyable rather than tedious. The platform learns from user feedback to continuously improve its recommendations.</p>
+        
+        <p>See how TripMate transforms travel planning from a chore into an exciting part of the journey, helping travelers discover new experiences while saving time and reducing stress.</p>
+      </div>
+      
+      <div class="bottom-video-container">
+        <video class="bottom-video" autoplay loop muted>
+          <source src="static/videos/Video_Prompt_for_TripMate_Project.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+
+    <!-- Developer Section -->
+    <section class="developer-section">
+      <div class="developer-content">
+        <img src="static/images/userprofile.jpg" alt="Akshitha Sai" class="developer-image">
+        <h3 class="developer-name">Akshitha Sai</h3>
+        <p class="developer-role">Creator & Developer of TripMate</p>
+        <p class="developer-bio">A passionate developer with a love for travel and technology. I believe in creating solutions that simplify life while enhancing experiences. TripMate represents my vision of making travel planning accessible, personalized, and enjoyable for everyone.</p>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/Akshitha-Sai"><i class="fab fa-twitter"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>TripMate</h3>
+        <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+         <div class="social-links-footer">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+      </div>
+       <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="destinations.html">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 TripMate. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu functionality
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const navMenu = document.getElementById('navMenu');
+    const userDropdownButton = document.getElementById('userDropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const logoutButton = document.getElementById('logoutButton');
+
+    if (mobileMenuButton && navMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuButton.innerHTML = navMenu.classList.contains('active')
+          ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
+    }
+
+    if (userDropdownButton && dropdownMenu) {
+      userDropdownButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.user-dropdown')) dropdownMenu.style.display = 'none';
+      });
+    }
+
+    if (logoutButton) {
+      logoutButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to logout?')) {
+          localStorage.removeItem('currentUser');
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    // Circular image slideshow animation
+   const circleImages = [
+    "static/images/lighthouse.jpeg",
+    "static/images/home.jpg",
+    "static/images/paris.jpg",
+    "static/images/sunbeach.jpg",
+    "static/images/tripimg2.jpg"
+  ];
+
+  const circleSlideshow = document.getElementById("circleSlideshow");
+
+  // Create slides
+  circleImages.forEach((path, index) => {
+    const slide = document.createElement("div");
+    slide.className = "circular-slide";
+    slide.style.backgroundImage = `url(${path})`;
+    if (index === 0) slide.classList.add("active");
+    circleSlideshow.appendChild(slide);
+  });
+
+  let circleIndex = 0;
+  const circleSlides = circleSlideshow.querySelectorAll(".circular-slide");
+
+  setInterval(() => {
+    circleSlides[circleIndex].classList.remove("active");
+    circleIndex = (circleIndex + 1) % circleSlides.length;
+    circleSlides[circleIndex].classList.add("active");
+  }, 2500);
+
+   
+  </script>
+</body>
+</html>

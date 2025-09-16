@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - TripMate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a4cff;
+      --primary-light: #8a6dff;
+      --secondary: #5a3dff;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      padding-top: 80px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 5px 0;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #ffd700;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .user-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-icon {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .user-icon img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .user-icon:hover img {
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background-color: white;
+      min-width: 220px;
+      border-radius: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 101;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-content a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--dark);
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: var(--light-gray);
+      padding-left: 20px;
+    }
+
+    .dropdown-content a i {
+      width: 20px;
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .dropdown-content .logout-link {
+      color: var(--warning);
+    }
+
+    .dropdown-content .logout-link:hover {
+      background-color: rgba(247, 37, 133, 0.1);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    /* About Page Content */
+    .about-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .slideshow-container {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      height: 450px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      border-radius: 20px;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .hero-content {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .hero-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: var(--secondary);
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: var(--gray);
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(106, 76, 255, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(106, 76, 255, 0.4);
+    }
+
+    /* Features Section */
+    .features-section {
+      margin: 80px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+      font-size: 2.2rem;
+      color: var(--dark);
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+
+    .feature-card p {
+      color: var(--gray);
+    }
+
+    /* Services Section */
+    .services-section {
+      margin: 80px 0;
+      background: linear-gradient(135deg, #f6f9ff 0%, #e9f2ff 100%);
+      padding: 60px 0;
+      border-radius: 20px;
+    }
+
+    .services-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .service-item {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .service-content h4 {
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .service-content p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Future Scope Section */
+    .future-section {
+      margin: 80px 0;
+    }
+
+    .future-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .future-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .future-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .future-card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .future-card-body {
+      padding: 25px;
+    }
+
+    .future-card-body p {
+      color: var(--gray);
+    }
+
+    /* Developer Section */
+    .developer-section {
+      text-align: center;
+      margin: 80px 0;
+      padding: 60px 0;
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      border-radius: 20px;
+      color: white;
+    }
+
+    .developer-content {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .developer-section h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .developer-section p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .developer-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #ffd700);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 80px 0 30px;
+      position: relative;
+      margin-top: 80px;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links a {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+
+    @media (max-width: 768px) {
+      .header-container { flex-wrap: wrap; }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      nav ul.active { display: flex; }
+      .mobile-menu-btn { display: block; }
+      .user-dropdown { order: 2; }
+      
+      .hero-section {
+        flex-direction: column;
+      }
+      
+      .slideshow-container {
+        width: 100%;
+        height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">✈️</span>
+        <h1>TripMate</h1>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuButton"><i class="fas fa-bars"></i></button>
+      <nav>
+        <ul id="navMenu">
+          <li><a href="main.html">Home</a></li>
+          <li><a href="destinations.html">Destinations</a></li>
+          <li><a href="trips.html">My Trips</a></li>
+          <li><a href="feedback.html">Reviews</a></li>
+          <li><a href="dev.html" class="active">About Us</a></li>
+        </ul>
+      </nav>
+      <div class="user-dropdown">
+        <div class="user-icon" id="userDropdownButton">
+          <img src="static/images/userprofile.jpg" alt="User Profile" id="profileImage">
+        </div>
+        <div id="dropdownMenu" class="dropdown-content">
+          <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+          <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+          <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Page Content -->
+  <div class="about-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="slideshow-container" id="slideshow">
+        <!-- Slides will be dynamically added via JavaScript -->
+      </div>
+      
+      <div class="hero-content">
+        <h2>Redefining Travel Planning with Intelligence</h2>
+        <p>TripMate is an AI-powered platform dedicated to crafting your perfect, personalized itinerary, eliminating the overwhelm of travel planning. We empower travelers to discover the world smarter, not harder.</p>
+        <a href="tripplan.html" class="cta-button">Start Planning Now</a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <h2 class="section-title">The Tripmate Advantage</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3>AI-Powered Itineraries</h3>
+          <p>Go beyond generic plans. Our engine curates unique schedules tailored to your budget, travel style, and preferences.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h3>Integrated Mapping</h3>
+          <p>Visualize your journey seamlessly with our integrated mapping tools. No more switching between multiple apps.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-history"></i>
+          </div>
+          <h3>Smart Travel Library</h3>
+          <p>Automatically save, organize, and revisit every trip you plan. Your personal travel history is always at your fingertips.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section">
+      <div class="services-container">
+        <h2 class="section-title">Additional Travel Services</h2>
+        <p style="text-align: center; margin-bottom: 40px; color: var(--gray);">We've partnered with leading service providers to bring you a complete travel experience right at your fingertips.</p>
+        
+        <div class="services-grid">
+          <div class="service-item">
+            <div class="service-icon">
+              <i class="fas fa-taxi"></i>
+            </div>
+            <div class="service-content">
+              <h4>Ride Services</h4>
+              <p>Book reliable transportation with trusted providers for seamless travel.</p>
+            </div>
+          </div>
+          
+          <div class="service-item">
+            <div class="service-icon">
+              <i class="fas fa-hotel"></i>
+            </div>
+            <div class="service-content">
+              <h4>Accommodation</h4>
+              <p>Find and book the perfect stay that matches your preferences and budget.</p>
+            </div>
+          </div>
+          
+          <div class="service-item">
+            <div class="service-icon">
+              <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="service-content">
+              <h4>Activity Booking</h4>
+              <p>Discover and reserve exciting activities and experiences at your destination.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Future Scope Section -->
+    <section class="future-section">
+      <h2 class="section-title">The Future of TripMate</h2>
+      <p style="text-align: center; max-width: 800px; margin: 0 auto 50px; color: var(--gray);">We're constantly innovating to enhance your travel experience. Here's what's coming next:</p>
+      
+      <div class="future-cards">
+        <div class="future-card">
+          <div class="future-card-header">
+            <h3>Real-Time Booking</h3>
+          </div>
+          <div class="future-card-body">
+            <p>Direct integration with booking services for flights, hotels, and activities - plan and book everything in one place.</p>
+          </div>
+        </div>
+        
+        <div class="future-card">
+          <div class="future-card-header">
+            <h3>Voice-Enabled Planning</h3>
+          </div>
+          <div class="future-card-body">
+            <p>Use voice commands to create and modify your itineraries for a hands-free planning experience.</p>
+          </div>
+        </div>
+        
+        <div class="future-card">
+          <div class="future-card-header">
+            <h3>Adaptive AI Learning</h3>
+          </div>
+          <div class="future-card-body">
+            <p>Our AI will learn from your feedback and preferences to offer increasingly accurate travel suggestions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Section -->
+    <section class="developer-section">
+      <div class="developer-content">
+        <h2>Designed & Developed With Passion</h2>
+        <p>TripMate was created with a vision to transform how people plan their travels, making it effortless, personalized, and enjoyable.</p>
+        <p>Developed by</p>
+        <div class="developer-name">Akshitha Sai</div>
+      </div>
+    </section>
+  </div>
+
+   <!-- Footer -->
+  <footer>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>TripMate</h3>
+          <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="#">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 TripMate. All rights reserved.</p>
+      </div>
+    
+  </footer>
+  <script>
+    // Mobile menu functionality
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const navMenu = document.getElementById('navMenu');
+    const userDropdownButton = document.getElementById('userDropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const logoutButton = document.getElementById('logoutButton');
+
+    if (mobileMenuButton && navMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuButton.innerHTML = navMenu.classList.contains('active')
+          ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
+    }
+
+    if (userDropdownButton && dropdownMenu) {
+      userDropdownButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.user-dropdown')) dropdownMenu.style.display = 'none';
+      });
+    }
+
+    if (logoutButton) {
+      logoutButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to logout?')) {
+          localStorage.removeItem('currentUser');
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    // Slideshow functionality
+    const imagePaths = [
+      'static/images/21308.jpg',
+      'static/images/img3.png',
+      'static/images/img1.jpg',
+      'static/images/personal-travel-planner-uk-v2.jpg',
+      'static/images/img2.png',
+      'static/images/tripimg2.jpg',
+      'static/images/tripimg3.jpg'
+    ];
+
+    const slideshowContainer = document.getElementById('slideshow');
+    
+    // Create slide elements
+    imagePaths.forEach((path, index) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      slide.style.backgroundImage = `url(${path})`;
+      if (index === 0) slide.classList.add('active');
+      slideshowContainer.appendChild(slide);
+    });
+
+    // Slideshow animation
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    
+    function showNextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+    
+    // Change slide every 5 seconds
+    setInterval(showNextSlide, 5000);
+  </script>
+</body>
+</html>

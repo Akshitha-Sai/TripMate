@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripMate - Signup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: url("https://wallpapercrafter.com/desktop1/535376-boat-purple-sky-reflection-water-purple-sunset.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 500px;
+      background: none;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .auth-container:hover {
+      transform: translateY(-5px);
+    }
+    .auth-top {
+      background: linear-gradient(45deg, #6a5acd, #dda0dd);
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .auth-top h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    .auth-top h1 span {
+      color: #ffb6c1;
+    }
+    .auth-top p {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    .auth-quote p {
+      font-style: italic;
+      font-size: 10px;
+    }
+    .auth-form-container {
+      background: #fff;
+      padding: 40px;
+      width: 100%;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .auth-header h2 {
+      color: #6a5acd;
+      font-size: 22px;
+    }
+    .auth-header p {
+      color: #666;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .input-group {
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #dda0dd;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 10px 10px 10px 35px;
+      border: 2px solid #dda0dd;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .input-group input:focus {
+      border-color: #483d8b;
+    }
+    .input-group .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #4682b4;
+      z-index: 2; /* Ensure it's above the input */
+    }
+    .error-message {
+      background-color: #ffe6e6;
+      color: #d63384;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      margin: 10px 0;
+      display: none;
+      text-align: center;
+      border: 1px solid #ffb6c1;
+    }
+    .success-message {
+      background-color: #e6ffe6;
+      color: #28a745;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      margin: 10px 0;
+      display: none;
+      text-align: center;
+      border: 1px solid #90ee90;
+    }
+    .btn-auth {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #6a5acd, #dda0dd);
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-auth:hover {
+      background: linear-gradient(45deg, #ffb6c1, #4682b4);
+      transform: scale(1.05);
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .auth-footer a {
+      color: #6a5acd;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .auth-container {
+        margin: 20px;
+      }
+      .auth-form-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-top">
+      <h1>Join <span>TripMate</span> ✈️</h1>
+      <p>Your AI-powered travel companion for unforgettable journeys</p>
+      <div class="auth-quote">
+        <p>"Travel is the only thing you buy that makes you richer."</p>
+      </div>
+    </div>
+    <div class="auth-form-container">
+      <div class="auth-header">
+        <h2>Create Your Account</h2>
+        <p>Start your journey with TripMate</p>
+      </div>
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+      <form id="signupForm" class="auth-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              placeholder="Confirm your password"
+              required
+            />
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth">
+          <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+        <div class="auth-footer">
+          <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check if user is already logged in
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && currentUser.isLoggedIn) {
+        // Redirect to main page if already logged in
+        window.location.href = 'main.html';
+        return;
+      }
+
+      // Password visibility toggle
+      document.querySelectorAll(".toggle-password").forEach((icon) => {
+        icon.addEventListener("click", function(e) {
+          e.preventDefault();
+          const input = this.parentElement.querySelector('input');
+          const isPassword = input.type === "password";
+          input.type = isPassword ? "text" : "password";
+          this.classList.toggle("fa-eye-slash");
+          this.classList.toggle("fa-eye");
+        });
+      });
+
+      // Form validation and submission
+      const signupForm = document.getElementById("signupForm");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      
+      if (signupForm) {
+        signupForm.addEventListener("submit", function(e) {
+          e.preventDefault();
+          
+          // Get form values
+          const username = document.getElementById("username").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const confirmPassword = document.getElementById("confirm-password").value;
+          
+          // Clear previous messages
+          errorMessage.style.display = 'none';
+          successMessage.style.display = 'none';
+          
+          // Validation
+          if (!username || !email || !password || !confirmPassword) {
+            showError('Please fill in all fields');
+            return;
+          }
+          
+          if (!isValidEmail(email)) {
+            showError('Please enter a valid email address');
+            return;
+          }
+          
+          if (password.length < 6) {
+            showError('Password must be at least 6 characters long');
+            return;
+          }
+          
+          if (password !== confirmPassword) {
+            showError('Passwords do not match');
+            return;
+          }
+          
+          // Check if user already exists
+          const users = JSON.parse(localStorage.getItem('users') || '[]');
+          if (users.some(user => user.email === email)) {
+            showError('User with this email already exists');
+            return;
+          }
+          
+          if (users.some(user => user.username === username)) {
+            showError('Username is already taken');
+            return;
+          }
+          
+          // Create new user
+          const newUser = {
+            id: Date.now().toString(),
+            username,
+            email,
+            password,
+            isLoggedIn: true,
+            createdAt: new Date().toISOString()
+          };
+          
+          // Save user
+          users.push(newUser);
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('currentUser', JSON.stringify(newUser));
+          
+          // Show success message
+          showSuccess('Registration successful! Redirecting to your dashboard...');
+          
+          // Redirect to main page after a short delay
+          setTimeout(() => {
+            window.location.href = 'main.html';
+          }, 1500);
+        });
+      }
+
+      // Helper functions
+      function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+      
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        
+        // Hide error after 5 seconds
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+      
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Trips - TripMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a4cff;
+            --primary-light: #8a6dff;
+            --secondary: #5a3dff;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ffd700;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* User Dropdown */
+        .user-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-icon {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .user-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .user-icon img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .user-icon:hover img {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 60px;
+            background-color: white;
+            min-width: 220px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            z-index: 101;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: var(--dark);
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--light-gray);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .dropdown-content .logout-link {
+            color: var(--warning);
+        }
+
+        .dropdown-content .logout-link:hover {
+            background-color: rgba(247, 37, 133, 0.1);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: var(--gray);
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab:hover {
+            background: rgba(106, 76, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(106, 76, 255, 0.2);
+        }
+
+        /* Trip Lists */
+        .trip-list {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .trip-list.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Trip Cards */
+        .trip-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .trip-info {
+            flex: 1;
+        }
+
+        .trip-info h3 {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .trip-info p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .trip-dates {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .trip-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-current {
+            background: #e8f5e8;
+            color: #2d5a2d;
+        }
+
+        .status-upcoming {
+            background: #fff4e6;
+            color: #cc6b00;
+        }
+
+        .status-completed {
+            background: #e8f0ff;
+            color: #2d4a7d;
+        }
+
+        .status-draft {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        /* Destination Images */
+        .destination-images {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .destination-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--primary-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .destination-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 76, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        /* Fixed CTA Button */
+        .cta-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(76, 201, 240, 0.4);
+            background: #3ab7db;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .modal-section p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            nav ul {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 15px;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #4361ee, #3a0ca3);
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            nav ul.active {
+                display: flex;
+            }
+            
+            .user-dropdown {
+                order: 2;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .trip-card {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .page-title h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .destination-images {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .cta-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .modal-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        /* Feedback Modal Overlay */
+#feedbackModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Modal Box */
+#feedbackModal .modal-box {
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease-out;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Modal Header */
+#feedbackModal h3 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* Form Elements */
+#feedbackModal label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+  color: #555;
+}
+
+#feedbackModal select,
+#feedbackModal textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+#feedbackModal select:focus,
+#feedbackModal textarea:focus {
+  border-color: #4a90e2;
+}
+
+/* Buttons */
+#feedbackModal .btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#feedbackModal .btn-submit {
+  background: linear-gradient(90deg, #061a5f, #026ab9, #1e056a);
+  color: #fff;
+  margin-right: 8px;
+}
+
+#feedbackModal .btn-submit:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+#feedbackModal .btn-cancel {
+  background: #f1f1f1;
+  color: #444;
+}
+
+#feedbackModal .btn-cancel:hover {
+  background: #e0e0e0;
+}
+
+/* Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d11a6d;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(247, 37, 133, 0.3);
+}
+
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: rgb(252, 251, 251);
+      padding: 80px 0 30px;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to bottom, var(--light), var(--dark));
+      z-index: 0;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 12px;
+    }
+
+    .footer-column a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .social-links a {
+      color: rgb(244, 243, 243);
+      background-color: rgba(255, 255, 255, 0.1);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(106, 76, 255, 0.3);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--gray);
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">✈️</span>
+                <h1>TripMate</h1>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuButton">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="main.html">Collections</a></li>
+                    <li><a href="main.html" class="active">About</a></li>
+                    <li><a href="feedback.html">Feedback</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-dropdown">
+                <div class="user-icon" id="userDropdownButton">
+                    <img src="static\images\userprofile.jpg" alt="User Profile">
+                </div>
+                <div id="dropdownMenu" class="dropdown-content">
+                    <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+                    <a href="trips.html"><i class="fas fa-suitcase"></i> My Trips</a>
+                    <a href="feedback.html"><i class="fas fa-comments"></i> Reviews & Feedback</a>
+                    <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="#" id="logoutButton" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>My Trips</h1>
+            <p>Manage your current, saved, and completed trips</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('current')">Current Trips</div>
+            <div class="tab" onclick="showTab('saved')">Saved Trips</div>
+            <div class="tab" onclick="showTab('history')">Trip History</div>
+        </div>
+
+        <!-- Trip Lists -->
+        <div class="trips-container">
+            <!-- Current Trips -->
+            <div id="current" class="trip-list active">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Saved Trips -->
+            <div id="saved" class="trip-list">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Trip History -->
+            <div id="history" class="trip-list">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+<!-- Fixed CTA Button -->
+<button class="cta-btn" onclick="window.location.href='tripplan.html'" 
+    style="background: linear-gradient(90deg, #061a5f, #026ab9, #1e056a); 
+           color: #fdfdfc; 
+           border: none; 
+           padding: 14px 32px; 
+           font-size: 18px; 
+           border-radius: 10px; 
+           cursor: pointer;">
+    <i class="fas fa-plus" style="margin-right: 8px; font-size: 18px;"></i> 
+    Create Trip
+</button>
+
+
+
+    <!-- Modal for Trip Plans -->
+    <div id="tripModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Trip Plan</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody">
+                <!-- Trip plan content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <footer>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>TripMate</h3>
+          <p>Your ultimate travel companion for unforgettable experiences around the globe.</p>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/akshitha-sai-1931-babbili" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/AkshithaSa73999"><i class="fab fa-twitter"></i></a>
+            <a href="https://github.com/Akshitha-Sai" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="mailto:akshithasai19@gmail.com"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="#">Destinations</a></li>
+            <li><a href="dev.html">Travel Guides</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html">Travel Blog</a></li>
+          </ul>
+        </div>
+        
+        
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="dev.html">Made with ❤️</a></li>
+            <li><a href="dev.html">Developer</a></li>
+            <li><a href="dev.html">Contact</a></li>
+            <li><a href="about.html">TripMate</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 TripMate. All rights reserved.</p>
+      </div>
+    
+  </footer>
+
+    <script>
+        // Trip categories
+        const TRIP_CATEGORIES = {
+            CURRENT: 'current',
+            SAVED: 'saved',
+            HISTORY: 'history'
+        };
+
+        // Initialize trips data in localStorage if not present
+        function initializeTripsData() {
+            if (!localStorage.getItem('userTrips')) {
+                // Start with empty trips
+                localStorage.setItem('userTrips', JSON.stringify({
+                    current: [],
+                    saved: [],
+                    history: []
+                }));
+            }
+        }
+
+        // Get trips from localStorage
+        function getTrips() {
+            return JSON.parse(localStorage.getItem('userTrips') || '{}');
+        }
+
+        // Save trips to localStorage
+        function saveTrips(trips) {
+            localStorage.setItem('userTrips', JSON.stringify(trips));
+        }
+
+        // Add a new trip to localStorage
+        function addNewTrip(tripData, category) {
+            const trips = getTrips();
+            
+            // Generate a unique ID for the trip
+            const tripId = 'trip-' + Date.now();
+            
+            // Create the trip object
+            const newTrip = {
+                id: tripId,
+                title: tripData.title || 'Untitled Trip',
+                dates: tripData.dates || 'No dates specified',
+                status: tripData.status || 'Draft',
+                statusClass: getStatusClass(tripData.status),
+                destinations: tripData.destinations || [],
+                plan: {
+                    title: tripData.planTitle || 'Trip Plan',
+                    content: tripData.planContent || '<p>No plan details available.</p>'
+                }
+            };
+            
+            // Add to the appropriate category
+            if (!trips[category]) {
+                trips[category] = [];
+            }
+            
+            trips[category].push(newTrip);
+            saveTrips(trips);
+            
+            return newTrip;
+        }
+
+        // Get CSS class for status
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'in progress': return 'status-current';
+                case 'upcoming': return 'status-upcoming';
+                case 'completed': return 'status-completed';
+                default: return 'status-draft';
+            }
+        }
+        // ⬅️ put this before renderTripCards()
+
+function startTrip(tripId) {
+    const trips = getTrips();
+    
+    // Find the trip in saved trips
+    const tripIndex = trips.saved.findIndex(t => t.id === tripId);
+    if (tripIndex === -1) return;
+    
+    const trip = trips.saved[tripIndex];
+    
+    // Update status
+    trip.status = 'In Progress';
+    trip.statusClass = 'status-current';
+    
+    // Move to current trips
+    trips.current.push(trip);
+    trips.saved.splice(tripIndex, 1);
+    
+    saveTrips(trips);
+    renderTripCards();
+    
+    alert(`Trip "${trip.title}" moved to Current Trips`);
+}
+
+
+        // Render trip cards
+        function renderTripCards() {
+            const trips = getTrips();
+            
+            // Clear existing content
+            document.getElementById('current').innerHTML = '';
+            document.getElementById('saved').innerHTML = '';
+            document.getElementById('history').innerHTML = '';
+            
+            // Render current trips
+            if (trips.current && trips.current.length > 0) {
+    trips.current.forEach(trip => {
+        document.getElementById('current').innerHTML += createTripCardHTML(trip, 'current');
+    });
+} else {
+    document.getElementById('current').innerHTML = `
+        <div class="empty-state">
+            <h3>No Current Trips</h3>
+            <p>You don't have any trips in progress right now</p>
+            <button class="btn btn-secondary" onclick="createTrip()">Plan a Trip</button>
+        </div>
+    `;
+}
+            
+            // Render saved trips
+            if (trips.saved && trips.saved.length > 0) {
+                trips.saved.forEach(trip => {
+                    document.getElementById('saved').innerHTML += createTripCardHTML(trip, 'saved');
+                });
+                
+                // Add the "Save New Trip" button
+                document.getElementById('saved').innerHTML += `
+                    <div class="empty-state">
+                        <h3>Ready for your next adventure?</h3>
+                        <p>Save trip ideas and plans for future travels</p>
+                        <button class="btn btn-secondary" onclick="createTrip()">Save New Trip</button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('saved').innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Saved Trips</h3>
+                        <p>Save trip ideas and plans for future travels</p>
+                        <button class="btn btn-secondary" onclick="createTrip()">Save New Trip</button>
+                    </div>
+                `;
+            }
+            
+            // Render trip history
+            if (trips.history && trips.history.length > 0) {
+                trips.history.forEach(trip => {
+                    document.getElementById('history').innerHTML += createTripCardHTML(trip, 'history');
+                });
+            } else {
+                document.getElementById('history').innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Trip History</h3>
+                        <p>Your completed trips will appear here</p>
+                    </div>
+                `;
+            }
+        }
+     function updateTripStatuses() {
+    const trips = getTrips();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Helper function to parse date strings
+    function parseDate(dateStr) {
+        const parts = dateStr.split('-');
+        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    }
+    
+    // Check current trips
+    for (let i = trips.current.length - 1; i >= 0; i--) {
+        const trip = trips.current[i];
+        if (trip.dates && trip.dates.includes(' - ')) {
+            const [startStr, endStr] = trip.dates.split(' - ');
+            const endDate = parseDate(endStr.trim());
+            
+            if (endDate < today) {
+                // Move to history
+                trip.status = 'Completed';
+                trip.statusClass = 'status-completed';
+                trips.history.push(trip);
+                trips.current.splice(i, 1);
+            }
+        }
+    }
+    
+    // Check saved trips
+    for (let i = trips.saved.length - 1; i >= 0; i--) {
+        const trip = trips.saved[i];
+        if (trip.dates && trip.dates.includes(' - ')) {
+            const [startStr, endStr] = trip.dates.split(' - ');
+            const startDate = parseDate(startStr.trim());
+            const endDate = parseDate(endStr.trim());
+            
+            if (startDate <= today && endDate >= today) {
+                // Move to current
+                trip.status = 'In Progress';
+                trip.statusClass = 'status-current';
+                trips.current.push(trip);
+                trips.saved.splice(i, 1);
+            } else if (endDate < today) {
+                // Move to history
+                trip.status = 'Completed';
+                trip.statusClass = 'status-completed';
+                trips.history.push(trip);
+                trips.saved.splice(i, 1);
+            }
+        }
+    }
+    
+    saveTrips(trips);
+}
+        // Create HTML for a trip card
+        function createTripCardHTML(trip, category) {
+    let imagesHTML = '';
+    if (trip.destinations && trip.destinations.length > 0) {
+        imagesHTML = '<div class="destination-images">';
+        trip.destinations.forEach(img => {
+            imagesHTML += `
+                <div class="destination-image">
+                    <img src="${img}" alt="Destination">
+                </div>
+            `;
+        });
+        imagesHTML += '</div>';
+    }
+
+    // Action buttons
+    let startButton = '';
+    if (category === 'saved') {
+        startButton = `<button class="btn btn-primary" onclick="startTrip('${trip.id}')">Start Trip</button>`;
+    }
+
+    let feedbackButton = '';
+    if (trip.status.toLowerCase() === 'completed' && !trip.feedbackGiven) {
+        feedbackButton = `<button class="btn btn-warning" onclick="openFeedbackModal('${trip.id}')">Give Feedback</button>`;
+    }
+
+    let viewButton = `<button class="btn btn-secondary" onclick="viewPlan('${trip.id}')">View Plan</button>`;
+
+    return `
+        <div class="trip-card">
+            <div class="trip-info">
+                <h3>${trip.title}</h3>
+                <p class="trip-dates">${trip.dates}</p>
+                ${imagesHTML}
+                <span class="trip-status ${trip.statusClass}">${trip.status}</span>
+            </div>
+            <div class="trip-actions">
+                ${viewButton}
+                ${startButton}
+                ${feedbackButton}
+            </div>
+        </div>
+    `;
+}
+
+        
+
+        // Tab switching functionality
+      function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.trip-list').forEach(list => list.classList.remove('active'));
+    
+    // Activate the clicked tab
+    document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.toLowerCase().includes(tabId)) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Show the corresponding content
+    document.getElementById(tabId).classList.add('active');
+}
+        // View trip plan functionality
+       function viewPlan(tripId) {
+    const trips = getTrips();
+    
+    // Search through all trip categories
+    let trip = null;
+    for (const category in trips) {
+        trip = trips[category].find(t => t.id === tripId);
+        if (trip) break;
+    }
+    
+    if (!trip) {
+        alert('Trip not found!');
+        return;
+    }
+    
+    document.getElementById('modalTitle').textContent = trip.plan.title;
+    document.getElementById('modalBody').innerHTML = trip.plan.content;
+    document.getElementById('tripModal').style.display = 'block';
+}
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('tripModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('tripModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Create new trip
+        function createTrip() {
+            window.location.href = 'tripplan.html';
+        }
+
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTripsData();
+            updateTripStatuses();
+            renderTripCards();
+            showTab('current'); // or 'saved' depending on preference
+            
+            // Setup mobile menu toggle
+            document.getElementById('mobileMenuButton').addEventListener('click', function() {
+                document.getElementById('navMenu').classList.toggle('active');
+            });
+            
+            // Setup user dropdown toggle
+            document.getElementById('userDropdownButton').addEventListener('click', function() {
+                document.getElementById('dropdownMenu').style.display = 
+                    document.getElementById('dropdownMenu').style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('.user-icon, .user-icon *')) {
+                    document.getElementById('dropdownMenu').style.display = 'none';
+                }
+            });
+            
+            // Logout functionality
+            document.getElementById('logoutButton').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    window.location.href = 'index.html';
+                }
+            });
+                // Attach feedback submit listener AFTER DOM loads
+    document.getElementById("submitFeedback").addEventListener("click", () => {
+        const rating = document.getElementById("rating").value;
+        const text = document.getElementById("feedbackText").value;
+
+        if (feedbackTripId) {
+            const trips = getTrips();
+            const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+
+            // Find the trip across categories
+            let tripFound = null;
+            for (const category in trips) {
+                const trip = trips[category].find(t => t.id === feedbackTripId);
+                if (trip) {
+                    tripFound = trip;
+                    trip.feedbackGiven = true;
+                    break;
+                }
+            }
+
+            if (tripFound) {
+                reviews.push({
+                    id: Date.now().toString(),
+                    tripName: tripFound.title,
+                    rating,
+                    text,
+                    date: new Date().toISOString()
+                });
+
+                // Save updates
+                localStorage.setItem("reviews", JSON.stringify(reviews));
+                saveTrips(trips);
+
+                alert("Feedback submitted successfully!");
+                renderTripCards();
+            }
+
+            closeFeedbackModal();
+        }
+    });
+
+        });
+
+        // Feedback Modal Functionality
+        let feedbackTripId = null;
+
+function openFeedbackModal(tripId) {
+    feedbackTripId = tripId;
+    document.getElementById("feedbackModal").style.display = "flex";
+}
+
+function closeFeedbackModal() {
+    feedbackTripId = null;
+    document.getElementById("feedbackModal").style.display = "none";
+}
+
+
+    </script>
+     <div id="feedbackModal">
+  <div class="modal-box">
+    <h3>Leave Feedback</h3>
+    
+    <label for="rating">Rating</label>
+    <select id="rating">
+      <option value="5">⭐⭐⭐⭐⭐</option>
+      <option value="4">⭐⭐⭐⭐</option>
+      <option value="3">⭐⭐⭐</option>
+      <option value="2">⭐⭐</option>
+      <option value="1">⭐</option>
+    </select>
+
+    <label for="feedbackText">Your thoughts</label>
+    <textarea id="feedbackText" rows="4" placeholder="Write your review..."></textarea>
+
+    <div style="text-align:right;">
+      <button class="btn btn-submit" id="submitFeedback">Submit</button>
+      <button class="btn btn-cancel" onclick="closeFeedbackModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
